@@ -23,6 +23,6 @@ mongoose.connect(mongoUrl, (err, db)=>{
     }
     
 });
-var User = mongoose.model('users', userSchema);
+var User = mongoose.model('Users', userSchema);
 
 module.exports = User;

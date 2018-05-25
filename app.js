@@ -31,6 +31,8 @@ const uploader = multer({
   storage: storage,
   limits: { fileSize: 1024 * 1024 * 5 }
 });
+const jwt = require("jsonwebtoken");
+// const checkAuth = require('./middleware/check-auth');
 /**************************************************
  *
  *                 database setting
@@ -100,7 +102,40 @@ app.post("/adduser", uploader.single("userImage"), (req, res) => {
   console.log("PASSWORD: " + password);
 });
 
-app.get("/all", (req, res)=>{res.send("all people can see this")})
+// *GET* this allows all users to get into this part
+app.get("/all", (req, res) => {
+  res.send("all people can see this");
+});
+
+// *POST* this is for login
+app.post("/login", (req, res, next) => {
+  console.log(date.toString() + "***************** log in *****************");
+  const username = req.body.name;
+  const password = req.body.password;
+  console.log(req.body);
+  console.log("= = = = = = = = = = = = = = = =");
+  // Users.findOne({}, (res, err)=>{console.log(err)});s
+  Users.findOne({ name: username })
+    .exec()
+    .then(result => {
+      if (result.password == password) {
+        const token = jwt.sign(
+          {
+            name: username,
+            userId: result._id
+          },
+          "secret",
+          { expiresIn: "1h" }
+        );
+        return res.json({ message: "auth approved", token: token });
+      } else {
+        return res.json({ message: "auth failed" });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
 
 /**************************************************
  *
