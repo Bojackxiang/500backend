@@ -9,7 +9,7 @@ mongoose.Promise = global.Promise;
 const mongoUrl = "mongodb://localhost:27017/Users";
 const Schema = mongoose.Schema;
 var userSchema = new Schema({
-    name: String,
+    name: {type: String, unique: true},
     password: String,
     userImage: {type: String, required: true}
   });

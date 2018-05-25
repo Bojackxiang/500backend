@@ -16,7 +16,7 @@ app.use(
     extended: true
   })
 );
-app.use('/uploads', express.static('uploads'));
+app.use("/uploads", express.static("uploads"));
 var crypto = require("crypto"); // this is for encode the password
 var multer = require("multer");
 var storage = multer.diskStorage({
@@ -24,7 +24,7 @@ var storage = multer.diskStorage({
     cb(null, "./uploads/");
   },
   filename: function(req, file, cb) {
-    cb(null, req.body.name+file.originalname);
+    cb(null, req.body.name + file.originalname);
   }
 });
 const uploader = multer({
@@ -64,11 +64,11 @@ app.post("/adduser", uploader.single("userImage"), (req, res) => {
   let password = req.body.password;
   let email = req.body.email;
   let newUser = new Users({
-      name: name,
-      password: password,
-      userImage: req.file.path,
-  })
-    /*   the multer file come back
+    name: name,
+    password: password,
+    userImage: req.file.path
+  });
+  /*   the multer file come back
     { 
         fieldname: 'userImage',
         originalname: '10.JPG',
@@ -83,28 +83,24 @@ app.post("/adduser", uploader.single("userImage"), (req, res) => {
   newUser
     .save()
     .then(result => {
-        if(result){
-            res.json(
-                {
-                    message: "store the user successfully",
-                }
-            )
-        }
-    })
-    .catch(e=>{
+      if (result) {
         res.json({
-            message: "try again"
-        })
+          message: "store the user successfully"
+        });
+      }
     })
-    
-
+    .catch(e => {
+      res.json({
+        message: e
+      });
+    });
 
   console.log(req.body);
   console.log("NAME: " + name);
   console.log("PASSWORD: " + password);
 });
 
-
+app.get("/all", (req, res)=>{res.send("all people can see this")})
 
 /**************************************************
  *
