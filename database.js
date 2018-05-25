@@ -11,6 +11,7 @@ const Schema = mongoose.Schema;
 var userSchema = new Schema({
     name: String,
     password: String,
+    userImage: {type: String, required: true}
   });
 mongoose.connect(mongoUrl, (err, db)=>{
     if(err){
