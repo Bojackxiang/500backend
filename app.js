@@ -32,6 +32,7 @@ const uploader = multer({
   limits: { fileSize: 1024 * 1024 * 5 }
 });
 const jwt = require("jsonwebtoken");
+const checkAuth = require("./middleware/check-auth");
 // const checkAuth = require('./middleware/check-auth');
 /**************************************************
  *
@@ -40,21 +41,31 @@ const jwt = require("jsonwebtoken");
  *************************************************/
 var Users = require("./database");
 
+const controller = require('./controllers/orders')
 /**************************************************
  *
  *                 Routing set up
  *
  *************************************************/
 
-// *GET* list all users
-app.get("/allusers", (req, res) => {
-  Users.find({}).then(users => {
-    console.log(
-      date.toString() + "***************** enter the allusers *****************"
-    );
-    res.json(users);
+// POST as check auth
+app.post('/secret', checkAuth, (req, res)=>{
+  res.json({
+    message: "you entered the secret page"
   });
-});
+})
+
+// POST as check auth
+app.get('/secret', checkAuth, (req, res)=>{
+  res.json({
+    message: "you entered the secret page"
+  });
+})
+
+
+// *GET* list all users
+app.get("/allusers", controller.list_all_users);
+
 
 // *POST* add user into the database
 app.post("/adduser", uploader.single("userImage"), (req, res) => {
